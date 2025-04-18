@@ -2,7 +2,7 @@
 <suite name="ParallelTestSuite" parallel="methods" thread-count="3">
     <test name="API Tests">
         <classes>
-            <class name="epam.api.tests.BookingTests"/>
+            <class name="epam.api.BookingTests"/>
         </classes>
     </test>
 </suite>

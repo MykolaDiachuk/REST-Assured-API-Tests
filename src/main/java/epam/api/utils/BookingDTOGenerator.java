@@ -1,14 +1,10 @@
-package epam.api.tests.utils;
+package epam.api.utils;
 
 import com.github.javafaker.Faker;
-import epam.api.tests.entities.BookingDTO;
-
-
+import epam.api.entities.BookingDTO;
 import java.util.Date;
 import java.util.Random;
 import java.text.SimpleDateFormat;
-
-
 
 public class BookingDTOGenerator {
     private static final Faker faker = new Faker();
@@ -30,7 +26,8 @@ public class BookingDTOGenerator {
         String additionalNeeds = faker.lorem().sentence();
 
         BookingDTO.BookingDates bookingDates = new BookingDTO.BookingDates(formattedCheckinDate, formattedCheckoutDate);
-        BookingDTO bookingDTO = new BookingDTO(
+
+        return new BookingDTO(
                 firstname,
                 lastname,
                 totalPrice,
@@ -38,8 +35,5 @@ public class BookingDTOGenerator {
                 bookingDates,
                 additionalNeeds
         );
-
-        return bookingDTO;
     }
-
 }

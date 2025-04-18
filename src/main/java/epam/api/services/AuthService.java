@@ -1,26 +1,17 @@
-package epam.api.tests.utils;
-
-import io.restassured.RestAssured;
+package epam.api.services;
+import epam.api.entities.AuthRequestDTO;
 import io.restassured.response.Response;
 
 import java.time.LocalDateTime;
 
 import static io.restassured.RestAssured.given;
 
-public class Authentication {
-    private static final String BASE_URL = "https://restful-booker.herokuapp.com";
+public class AuthService {
     private static LocalDateTime createdAt;
     private static String token;
 
-    private static void retriveToken() {
-
-        RestAssured.baseURI = BASE_URL;
-
-        String requestBody = "{\n" +
-                "    \"username\": \"admin\",\n" +
-                "    \"password\": \"password123\"\n" +
-                "}";
-
+    private static void retrieveToken() {
+        AuthRequestDTO requestBody = new AuthRequestDTO("admin", "password123");
         Response response = given()
                 .contentType("application/json")
                 .body(requestBody)
@@ -30,13 +21,11 @@ public class Authentication {
                 .extract().response();
 
         createdAt = LocalDateTime.now();
-
         token =  response.jsonPath().getString("token");
-
     }
 
     public static String getAuthToken(){
-        if (token == null || isExpired()) retriveToken();
+        if (token == null || isExpired()) retrieveToken();
         return token;
     }
 

@@ -1,4 +1,4 @@
-package epam.api.tests.entities;
+package epam.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
