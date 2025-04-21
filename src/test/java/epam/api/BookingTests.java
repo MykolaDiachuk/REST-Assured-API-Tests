@@ -9,13 +9,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class BookingTests {
-    private static final String BASE_URL = ConfigReader.getProperty("base.url");
 
     private static final BookingService bookingService = new BookingService();
 
     @BeforeClass
     public void setup() {
-        RestAssured.baseURI = BASE_URL;
+        RestAssured.baseURI = ConfigReader.getProperty("base.url");
     }
 
     @Test()
