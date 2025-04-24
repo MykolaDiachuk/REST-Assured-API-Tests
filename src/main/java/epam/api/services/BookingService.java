@@ -2,7 +2,6 @@ package epam.api.services;
 
 import epam.api.entities.BookingDTO;
 import epam.api.entities.BookingResponseDTO;
-import epam.api.utils.BookingDTOGenerator;
 import epam.api.utils.HTTPClient;
 import io.restassured.response.Response;
 import org.slf4j.Logger;
@@ -12,9 +11,7 @@ public class BookingService {
 
     private static final Logger logger = LoggerFactory.getLogger(BookingService.class);
 
-    public BookingResponseDTO createRandomBooking() {
-        logger.info("Generate random booking and send POST request");
-        BookingDTO bookingDTO = BookingDTOGenerator.generateRandomBookingEntity();
+    public BookingResponseDTO createBooking(BookingDTO bookingDTO) {
         Response response = HTTPClient.POST("/booking", bookingDTO);
 
         int bookingId = response.jsonPath().getInt("bookingid");
@@ -23,21 +20,28 @@ public class BookingService {
         return new BookingResponseDTO(bookingId, bookingDTO);
     }
 
-    public BookingResponseDTO getBookingById(int bookingId) {
+    public Response getBookingById(int bookingId) {
         logger.info("GET booking with ID: {}", bookingId);
-        Response response = HTTPClient.GET("/booking/" + bookingId);
-        response.then().statusCode(200);
-        BookingDTO dto = response.as(BookingDTO.class);
-        return new BookingResponseDTO(bookingId, dto);
+        return HTTPClient.GET("/booking/" + bookingId);
     }
 
-    public void deleteBooking(int bookingId) {
+    public Response deleteBooking(int bookingId) {
         logger.info("DELETE booking with ID: {}", bookingId);
-        HTTPClient.DELETE("/booking/" + bookingId);
+       return HTTPClient.DELETE("/booking/" + bookingId);
     }
 
-    public void assertBookingDeleted(int bookingId) {
-        logger.info("Verify booking with ID {} no longer exists", bookingId);
-        HTTPClient.GET("/booking/" + bookingId).then().statusCode(404);
+    public Response updateBookingWithPatch(int bookingId, BookingDTO partialBookingDTO) {
+        return HTTPClient.PATCH("/booking/" + bookingId, partialBookingDTO);
+    }
+
+    public Response updateBookingWithPut(int bookingId, BookingDTO fullBookingDTO) {
+        return HTTPClient.PUT("/booking/" + bookingId, fullBookingDTO);
+    }
+
+    public BookingResponseDTO convertToBookingResponseDTO(Response response, int bookingId) {
+        BookingResponseDTO bookingResponseDTO = new BookingResponseDTO();
+        bookingResponseDTO.setBookingId(bookingId);
+        bookingResponseDTO.setBooking(response.as(BookingDTO.class));
+        return bookingResponseDTO;
     }
 }

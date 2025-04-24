@@ -13,6 +13,4 @@ public class BookingResponseDTO {
     private int bookingId;
     @JsonProperty("booking")
     private BookingDTO booking;
-
-
 }

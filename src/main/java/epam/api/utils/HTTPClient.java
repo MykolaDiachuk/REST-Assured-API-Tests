@@ -11,7 +11,7 @@ import static io.restassured.RestAssured.given;
 public class HTTPClient {
 
     private static RequestSpecification getBaseRequest() {
-        return given().contentType(ContentType.JSON);
+        return given().contentType(ContentType.JSON).filter(new RestAssuredRequestFilter());
     }
 
     public static Response POST(String url, Object body) {
@@ -25,12 +25,16 @@ public class HTTPClient {
     }
 
     public static Response PUT(String url, Object body) {
-        RequestSpecification request = getBaseRequest().body(body);
+        RequestSpecification request = getBaseRequest()
+                .header("Cookie", "token=" + AuthService.getAuthToken())
+                .body(body);
         return executeRequest(Method.PUT, url, request);
     }
 
     public static Response PATCH(String url, Object body) {
-        RequestSpecification request = getBaseRequest().body(body);
+        RequestSpecification request = getBaseRequest()
+                .header("Cookie", "token=" + AuthService.getAuthToken())
+                .body(body);
         return executeRequest(Method.PATCH, url, request);
     }
 

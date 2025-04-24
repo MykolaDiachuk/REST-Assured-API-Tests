@@ -1,0 +1,14 @@
+<configuration>
+    <property name="LOG_DIR" value="${user.dir}/target/report/logs"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Без кольорів, просто логи з рівнями -->
+            <pattern>[%thread] %d{HH:mm:ss.SSS} %-5level [%logger{0}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
