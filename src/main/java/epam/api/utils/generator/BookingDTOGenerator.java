@@ -1,4 +1,4 @@
-package epam.api.utils;
+package epam.api.utils.generator;
 
 import com.github.javafaker.Faker;
 import epam.api.entities.BookingDTO;

@@ -3,7 +3,7 @@ package epam.api;
 import epam.api.entities.BookingDTO;
 import epam.api.entities.BookingResponseDTO;
 import epam.api.services.BookingService;
-import epam.api.utils.BookingDTOGenerator;
+import epam.api.utils.generator.BookingDTOGenerator;
 import epam.api.utils.config.ConfigReader;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
