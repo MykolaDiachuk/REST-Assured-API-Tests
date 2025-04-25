@@ -24,14 +24,11 @@ public class BookingTests {
     public void verifyBookingCreatedCorrectlyTest() {
         BookingDTO bookingDTO = BookingDTOGenerator.generateRandomBookingEntity();
 
-        BookingResponseDTO expected = bookingService.createBooking(bookingDTO);
+        BookingResponseDTO createdBooking = bookingService.createBooking(bookingDTO);
 
-        BookingResponseDTO actual = bookingService.convertToBookingResponseDTO(
-                bookingService.getBookingById(expected.getBookingId()),expected.getBookingId());
-
-        Assertions.assertThat(actual)
+        Assertions.assertThat(bookingDTO)
                 .describedAs("Verify booking data created correctly")
-                .isEqualTo(expected);
+                .isEqualTo(createdBooking.getBooking());
     }
 
     @Test(description = "Verifies that the booking data is retrieved correctly.")
@@ -40,10 +37,9 @@ public class BookingTests {
 
         BookingResponseDTO expected = bookingService.createBooking(bookingDTO);
 
-        BookingResponseDTO actual = bookingService.convertToBookingResponseDTO(
-                bookingService.getBookingById(expected.getBookingId()),expected.getBookingId());
+        BookingDTO actual = bookingService.getBookingById(expected.getBookingId()).as(BookingDTO.class);
 
-        Assertions.assertThat(actual.getBooking())
+        Assertions.assertThat(actual)
                 .describedAs("Verify booking data got correctly")
                 .isEqualTo(expected.getBooking());
     }
@@ -105,12 +101,6 @@ public class BookingTests {
 
         BookingDTO updatedBooking = putResponse.as(BookingDTO.class);
 
-        Assertions.assertThat(updatedBooking.getFirstname()).isEqualTo("UpdatedFullFirstName");
-        Assertions.assertThat(updatedBooking.getLastname()).isEqualTo("UpdatedFullLastName");
-        Assertions.assertThat(updatedBooking.getTotalPrice()).isEqualTo(999);
-        Assertions.assertThat(updatedBooking.getDepositPaid()).isEqualTo(true);
-        Assertions.assertThat(updatedBooking.getBookingDates().getCheckin()).isEqualTo("2025-06-01");
-        Assertions.assertThat(updatedBooking.getBookingDates().getCheckout()).isEqualTo("2025-06-10");
-        Assertions.assertThat(updatedBooking.getAdditionalNeeds()).isEqualTo("New additional needs");
+        Assertions.assertThat(updatedBooking).isEqualTo(fullBookingDTO);
     }
 }

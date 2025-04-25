@@ -38,10 +38,4 @@ public class BookingService {
         return HTTPClient.PUT("/booking/" + bookingId, fullBookingDTO);
     }
 
-    public BookingResponseDTO convertToBookingResponseDTO(Response response, int bookingId) {
-        BookingResponseDTO bookingResponseDTO = new BookingResponseDTO();
-        bookingResponseDTO.setBookingId(bookingId);
-        bookingResponseDTO.setBooking(response.as(BookingDTO.class));
-        return bookingResponseDTO;
-    }
 }
