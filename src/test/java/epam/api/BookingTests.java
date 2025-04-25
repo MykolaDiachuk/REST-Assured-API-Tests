@@ -20,7 +20,7 @@ public class BookingTests {
         RestAssured.baseURI = ConfigReader.getProperty("base.url");
     }
 
-    @Test()
+    @Test(description = "Verifies that the booking data is created correctly.")
     public void verifyBookingCreatedCorrectlyTest() {
         BookingDTO bookingDTO = BookingDTOGenerator.generateRandomBookingEntity();
 
@@ -29,11 +29,12 @@ public class BookingTests {
         BookingResponseDTO actual = bookingService.convertToBookingResponseDTO(
                 bookingService.getBookingById(expected.getBookingId()),expected.getBookingId());
 
-        Assertions.assertThat(actual).isEqualTo(expected)
-                .describedAs("Verify booking data created correctly");
+        Assertions.assertThat(actual)
+                .describedAs("Verify booking data created correctly")
+                .isEqualTo(expected);
     }
 
-    @Test()
+    @Test(description = "Verifies that the booking data is retrieved correctly.")
     public void verifyBookingRetrievedCorrectlyTest() {
         BookingDTO bookingDTO = BookingDTOGenerator.generateRandomBookingEntity();
 
@@ -42,11 +43,12 @@ public class BookingTests {
         BookingResponseDTO actual = bookingService.convertToBookingResponseDTO(
                 bookingService.getBookingById(expected.getBookingId()),expected.getBookingId());
 
-        Assertions.assertThat(actual.getBooking()).isEqualTo(expected.getBooking())
-                .describedAs("Verify booking data got correctly");
+        Assertions.assertThat(actual.getBooking())
+                .describedAs("Verify booking data got correctly")
+                .isEqualTo(expected.getBooking());
     }
 
-    @Test()
+    @Test(description = "Verifies that the booking is successfully deleted and no longer exists in the system.")
     public void verifyBookingDeletedSuccessfullyTest() {
         BookingDTO bookingDTO = BookingDTOGenerator.generateRandomBookingEntity();
 
@@ -54,40 +56,37 @@ public class BookingTests {
 
         Response deleteResponse = bookingService.deleteBooking(booking.getBookingId());
 
-        Assertions.assertThat(deleteResponse.statusCode()).isEqualTo(201)
-                .describedAs("Verify booking deleted successfully");
+        Assertions.assertThat(deleteResponse.statusCode())
+                .describedAs("Verify booking deleted successfully")
+                .isEqualTo(201);
 
         Response existenceCheck = bookingService.getBookingById(booking.getBookingId());
 
-        Assertions.assertThat(existenceCheck.statusCode()).isEqualTo(404)
-                .describedAs("Verify booking does not exist anymore");
+        Assertions.assertThat(existenceCheck.statusCode())
+                .describedAs("Verify booking does not exist anymore")
+                .isEqualTo(404);
     }
 
-    @Test
+    @Test(description = "Verifies that partial updates (PATCH) to the booking are applied correctly.")
     public void verifyPartialBookingUpdateTest() {
         BookingDTO bookingDTO = BookingDTOGenerator.generateRandomBookingEntity();
         BookingResponseDTO createdBooking = bookingService.createBooking(bookingDTO);
 
-        BookingDTO partialBookingDTO = new BookingDTO(
-                "UpdatedFirstName",
-                "UpdatedLastName",
-                createdBooking.getBooking().getTotalPrice(),
-                createdBooking.getBooking().isDepositPaid(),
-                createdBooking.getBooking().getBookingDates(),
-                createdBooking.getBooking().getAdditionalNeeds()
-        );
+        BookingDTO partialBookingDTO = new BookingDTO();
+
+        partialBookingDTO.setFirstname("UpdatedFirstName");
+        partialBookingDTO.setLastname("UpdatedLastName");
 
         Response patchResponse = bookingService.updateBookingWithPatch(createdBooking.getBookingId(), partialBookingDTO);
         Assertions.assertThat(patchResponse.statusCode()).isEqualTo(200);
 
-        BookingDTO updatedBooking = bookingService.getBookingById(
-                createdBooking.getBookingId()).as(BookingDTO.class);
+        BookingDTO updatedBooking = patchResponse.as(BookingDTO.class);
 
         Assertions.assertThat(updatedBooking.getFirstname()).isNotEqualTo(createdBooking.getBooking().getFirstname());
         Assertions.assertThat(updatedBooking.getLastname()).isNotEqualTo(createdBooking.getBooking().getLastname());
     }
 
-    @Test
+    @Test(description = "Verifies that full updates (PUT) to the booking are applied correctly.")
     public void verifyFullBookingUpdateTest() {
         BookingDTO bookingDTO = BookingDTOGenerator.generateRandomBookingEntity();
         BookingResponseDTO createdBooking = bookingService.createBooking(bookingDTO);
@@ -104,13 +103,12 @@ public class BookingTests {
         Response putResponse = bookingService.updateBookingWithPut(createdBooking.getBookingId(), fullBookingDTO);
         Assertions.assertThat(putResponse.statusCode()).isEqualTo(200);
 
-        BookingDTO updatedBooking = bookingService.getBookingById(
-                createdBooking.getBookingId()).as(BookingDTO.class);
+        BookingDTO updatedBooking = putResponse.as(BookingDTO.class);
 
         Assertions.assertThat(updatedBooking.getFirstname()).isEqualTo("UpdatedFullFirstName");
         Assertions.assertThat(updatedBooking.getLastname()).isEqualTo("UpdatedFullLastName");
         Assertions.assertThat(updatedBooking.getTotalPrice()).isEqualTo(999);
-        Assertions.assertThat(updatedBooking.isDepositPaid()).isEqualTo(true);
+        Assertions.assertThat(updatedBooking.getDepositPaid()).isEqualTo(true);
         Assertions.assertThat(updatedBooking.getBookingDates().getCheckin()).isEqualTo("2025-06-01");
         Assertions.assertThat(updatedBooking.getBookingDates().getCheckout()).isEqualTo("2025-06-10");
         Assertions.assertThat(updatedBooking.getAdditionalNeeds()).isEqualTo("New additional needs");
